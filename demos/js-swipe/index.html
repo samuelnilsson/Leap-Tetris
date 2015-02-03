@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JavaScript Swipe</title>
+	<style>
+		body {
+			background: white;
+			font: 15px 'Helvetica', sans-serif;
+		}
+	</style>
+</head>
+<body>
+	<h1>Leap Motion JavaScript: Swipe Gesture</h1>
+	<div id="output"></div>
+	<script src="/node_modules/leapjs/leap-0.6.4.js"></script>
+	<script>
+		var output = document.getElementById("output");
+		var controller = Leap.loop({ enableGestures: true }, function(frame) {});
+
+		var tone1 = new Audio('sound/')
+
+		controller.on('gesture', function(gesture) {
+			if(gesture.type == 'swipe') {
+				if(gesture.state == 'start') {
+					console.log('Swipe started!', 'Swipe id:', gesture.id, gesture);
+				} else if(gesture.state == 'stop') {
+					console.log('Swipe stopped!', 'Swipe id:', gesture.id, gesture);
+				}
+			}
+
+			if(gesture.type == 'keyTap') {
+
+			}
+		});
+	</script>
+</body>
+</html>
