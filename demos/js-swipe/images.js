@@ -1,6 +1,4 @@
 var imgContainer = document.getElementById("images");
-var animationStep = 20;
-var animationStepTime = 100;
 var imgs = [
 	'imgs/dj.jpeg',
 	'imgs/earphones.jpeg',
@@ -17,11 +15,28 @@ for(var imgKey in imgs) {
 }
 
 function stepRight() {
-	window.scroll(window.pageXOffset + animationStep, 0);
-	console.log(window.scrollX);
+	step(400, 500);
 }
 
 function stepLeft() {
-	window.scroll(window.pageXOffset - animationStep, 0);
-	console.log(window.scrollX);
+	step(-400, 500);
+}
+
+function step(amount, time) {
+	var amount 		= amount || 400,
+		time 		= time || 500,
+		numSteps 	= time / 10,
+		amountStep 	= amount / numSteps;
+
+	console.log('amountStep', amountStep);
+	console.log('numSteps', numSteps);
+
+	var interval = setInterval(function() {
+		var  nextScrollPosition = window.pageXOffset + amountStep;
+		console.log(nextScrollPosition);
+		window.scroll(nextScrollPosition, 0);
+
+		if(--numSteps == 0)
+			clearInterval(interval);
+	}, 10);
 }
