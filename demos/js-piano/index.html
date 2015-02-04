@@ -28,7 +28,7 @@
 		];
 
 		controller.on('gesture', function(gesture) {
-			if(gesture.type == 'keyTap') {
+			if(gesture.type == 'screenTap' || gesture.type == 'keyTap') {
 				var position = gesture.position[0],
 					pianoWidth = 400,
 					toneWidth = pianoWidth / tones.length,
