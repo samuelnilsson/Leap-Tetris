@@ -37,15 +37,21 @@
 	<body>
 
 		<div class="reveal">
-
-			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-					<h1>TDDD57: Labbar</h1>
+					<h1>Leap Motion</h1>
+					<h2>Anton & Samuel</h2>
 				</section>
-
 				<section>
-					<h1>Swipe</h1>
+					<h2>Egenskaper</h2>
+					<ul>
+						<li>Swipe</li>
+						<li>Point/Tap</li>
+						<li>Circles</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Swipe</h2>
 					<ul>
 						<li>Hur testar vi?</li>
 						<li>Resultat</li>
@@ -53,17 +59,27 @@
 					</ul>
 				</section>
 
+				<section class="fragments">
+					<pre class="javascript"><code>var controller = Leap.loop({ enableGestures: true });
+controller.on('gesture', function(gesture) { ... }</code></pre>
+
+					<pre class=" fragment javascript"><code>if(gesture.type == 'swipe')
+	if(gesture.state == 'start')
+		if(gesture.direction[0] < 0)
+			stepLeft();
+		else
+			stepRight();</code></pre>
+
+					<a class="fragment" href="http://localhost:8000/swipe" target="_blank">Demo</a>
+				</section>
+
 				<section>
-					<pre class="javascript"><code>meta: {
-	banner:
-		'/*!\n' +
-		' * reveal.js' +
-		' * http://lab.hakim.se/reveal-js\n' +
-		' * MIT licensed\n' +
-		' *\n' +
-		' * Copyright' +
-		' */'
-}</code></pre>
+					<h2>Brister</h2>
+					<ul>
+						<li>Kräver lite träning</li>
+						<li>Bla bla bla</li>
+						<li>...</li>
+					</ul>
 				</section>
 
 				<section>
@@ -75,6 +91,25 @@
 					</ul>
 				</section>
 
+				<section class="fragments">
+					<pre class="javascript"><code>var controller = Leap.loop({ enableGestures: true });
+controller.on('gesture', function(gesture) { ... }</code></pre>
+
+					<pre class=" fragment javascript"><code>if(gesture.type == 'screenTap' || gesture.type == 'keyTap') {</code></pre>
+					<pre class="fragment javascript"><code>tone.play();</code></pre>
+
+					<a class="fragment" href="http://localhost:8000/piano" target="_blank">Demo</a>
+				</section>
+
+				<section>
+					<h2>Brister</h2>
+					<ul>
+						<li>Inte intuitivt hur keyTap är definierat</li>
+						<li>Handrörelser förstör lätt</li>
+						<li>Förvånansvärt bra med flera fingrar</li>
+					</ul>
+				</section>
+
 				<section>
 					<h1>Circles</h1>
 					<ul>
@@ -83,6 +118,18 @@
 						<li>Brister</li>
 					</ul>
 				</section>
+
+				<section class="fragments">
+					<pre class="javascript"><code>var controller = Leap.loop({ enableGestures: true });
+controller.on('gesture', function(gesture) { ... }</code></pre>
+
+					<pre class=" fragment javascript"><code>var circle = new Circle();</code></pre>
+					<pre class="fragment javascript"><code>circle.round.draw.canvas.Hejsan().sometimes = true;</code></pre>
+
+					<a class="fragment" href="http://localhost:8000/circles" target="_blank">Demo</a>
+				</section>
+
+				<section></section> <!-- Empty slide for niceliciousty. -->
 			</div>
 		</div>
 

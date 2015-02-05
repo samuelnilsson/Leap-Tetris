@@ -5,6 +5,10 @@ var imgs = [
 	'imgs/flower.jpeg',
 	'imgs/ipad.jpeg',
 	'imgs/wine.jpeg',
+	'imgs/ants.jpeg',
+	'imgs/city.jpeg',
+	'imgs/abstract.jpeg',
+	'imgs/couple.jpeg',
 ];
 
 for(var imgKey in imgs) {
@@ -13,6 +17,12 @@ for(var imgKey in imgs) {
 	img.src = imgSrc;
 	imgContainer.appendChild(img);
 }
+
+window.onload = function() {
+	var center = (imgs.length * 400 - document.body.offsetWidth) / 2;
+	window.scroll(center, 0);
+};
+
 
 function stepRight() {
 	step(400, 500);
