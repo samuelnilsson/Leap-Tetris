@@ -1,6 +1,5 @@
 var output = document.getElementById("output");
-var controller = Leap.loop({ enableGestures: true }, function(frame) {});
-var activeSwipeHand = -1;
+var controller = Leap.loop({ enableGestures: true });
 
 controller.on('gesture', function(gesture) {
 	if(gesture.type == 'swipe') {
