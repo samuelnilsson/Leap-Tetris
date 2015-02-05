@@ -55,7 +55,7 @@
 					<ul>
 						<li>Hur testar vi?</li>
 						<li>Resultat</li>
-						<li>Brister</li>
+						<li>Iakttagelser</li>
 					</ul>
 				</section>
 
@@ -74,11 +74,11 @@ controller.on('gesture', function(gesture) { ... }</code></pre>
 				</section>
 
 				<section>
-					<h2>Brister</h2>
+					<h2>Iakttagelser</h2>
 					<ul>
 						<li>Kräver lite träning</li>
-						<li>Bla bla bla</li>
-						<li>...</li>
+						<li>Fungerar bättre med fingrarna lite isär</li>
+						<li>En swipe per finger</li>
 					</ul>
 				</section>
 
@@ -87,7 +87,7 @@ controller.on('gesture', function(gesture) { ... }</code></pre>
 					<ul>
 						<li>Hur testar vi?</li>
 						<li>Resultat</li>
-						<li>Brister</li>
+						<li>Iakttagelser</li>
 					</ul>
 				</section>
 
@@ -102,7 +102,7 @@ controller.on('gesture', function(gesture) { ... }</code></pre>
 				</section>
 
 				<section>
-					<h2>Brister</h2>
+					<h2>Iakttagelser</h2>
 					<ul>
 						<li>Inte intuitivt hur keyTap är definierat</li>
 						<li>Handrörelser förstör lätt</li>
@@ -115,19 +115,30 @@ controller.on('gesture', function(gesture) { ... }</code></pre>
 					<ul>
 						<li>Hur testar vi?</li>
 						<li>Resultat</li>
-						<li>Brister</li>
+						<li>Iakttagelser</li>
 					</ul>
 				</section>
 
 				<section class="fragments">
-					<pre class="javascript"><code>var controller = Leap.loop({ enableGestures: true });
-controller.on('gesture', function(gesture) { ... }</code></pre>
+					<pre class="javascript"><code>var controller = Leap.loop({enableGestures: true}, function(frame) {
+    if (frame.hands.length > 0) {
+        var finger = frame.hands[0].fingers[0];
+        var fingertipPosition = finger.dipPosition;
+        ...
+    }
+});</code></pre>
+                    <pre class="fragment javascript"><code>controller.on('gesture', function(gesture) {...});</code></pre>
 
-					<pre class=" fragment javascript"><code>var circle = new Circle();</code></pre>
-					<pre class="fragment javascript"><code>circle.round.draw.canvas.Hejsan().sometimes = true;</code></pre>
+                    <pre class="fragment javascript"><code>if (gesture.type == 'circle' && gesture.state == "stop" 
+                    && gesture.radius > 30) {
+                    </code></pre>
 
 					<a class="fragment" href="http://localhost:8000/circles" target="_blank">Demo</a>
 				</section>
+
+                <section>
+                    <h2>Iakttagelser</h2>
+                </section>
 
 				<section></section> <!-- Empty slide for niceliciousty. -->
 			</div>
