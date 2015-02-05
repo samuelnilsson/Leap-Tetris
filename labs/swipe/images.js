@@ -18,8 +18,10 @@ for(var imgKey in imgs) {
 	imgContainer.appendChild(img);
 }
 
-// Center the scroll position
-window.scroll((imgs.length * 400 - document.body.offsetWidth) / 2, 0);
+window.onload = function() {
+	var center = (imgs.length * 400 - document.body.offsetWidth) / 2;
+	window.scroll(center, 0);
+};
 
 
 function stepRight() {
