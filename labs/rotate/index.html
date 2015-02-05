@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>JavaScript Rotate</title>
+</head>
+
+<body>
+    <canvas id="mycanvas" width="400" height="400"></canvas>
+    <script src="node_modules/leapjs/leap-0.6.4.js"></script>
+    <script>
+        var canvas = document.getElementById("mycanvas");
+        var context = canvas.getContext('2d');
+        context.beginPath();
+        context.moveTo(0, 0);
+        var xdiff = 200;
+        var ydiff = 400;
+
+        var controller = Leap.loop({enableGestures: true}, function(frame) {
+            if (frame.hands.length > 0) {
+                var finger = frame.hands[0].fingers[0];
+                var fingertipPosition = finger.dipPosition;
+                context.lineTo(fingertipPosition[0] + xdiff, 
+                        ydiff - fingertipPosition[1]);               
+                context.strokeStyle = '#81DAF5';
+                context.stroke();
+            }
+        });
+
+        controller.on('gesture', function(gesture) {
+            if (gesture.type == 'circle' && gesture.state == "stop" 
+                    && gesture.radius > 30) {
+                var position = gesture.center;
+                var radius = 5;
+
+                console.log("in gesture");
+                context.closePath();
+                context.beginPath();
+                context.arc(position[0] + xdiff, ydiff - position[1], radius, 0, 2 * Math.PI, false);
+                context.fill();
+                context.strokeStyle = '#FF0000';
+                context.stroke();
+            }
+        });
+
+    </script>
+</body>
+
+</html>
