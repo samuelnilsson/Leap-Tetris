@@ -18,17 +18,17 @@
 
         var controller = Leap.loop({enableGestures: true}, function(frame) {
             if (frame.hands.length > 0) {
-                var finger = frame.hands[0].fingers[0];
+                var finger = frame.hands[0].indexFinger;
                 var fingertipPosition = finger.dipPosition;
-                context.lineTo(fingertipPosition[0] + xdiff, 
-                        ydiff - fingertipPosition[1]);               
+                context.lineTo(fingertipPosition[0] + xdiff,
+                        ydiff - fingertipPosition[1]);
                 context.strokeStyle = '#81DAF5';
                 context.stroke();
             }
         });
 
         controller.on('gesture', function(gesture) {
-            if (gesture.type == 'circle' && gesture.state == "stop" 
+            if (gesture.type == 'circle' && gesture.state == "stop"
                     && gesture.radius > 30) {
                 var position = gesture.center;
                 var radius = 5;
