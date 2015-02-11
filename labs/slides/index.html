@@ -39,10 +39,6 @@
 		<div class="reveal">
 			<div class="slides">
 				<section>
-					<h1>Leap Motion</h1>
-					<h2>Anton & Samuel</h2>
-				</section>
-				<section>
 					<h2>Egenskaper</h2>
 					<ul>
 						<li>Swipe</li>
@@ -50,16 +46,9 @@
 						<li>Circles</li>
 					</ul>
 				</section>
-				<section>
-					<h2>Swipe</h2>
-					<ul>
-						<li>Hur testar vi?</li>
-						<li>Resultat</li>
-						<li>Iakttagelser</li>
-					</ul>
-				</section>
 
 				<section class="fragments">
+					<h2>Swipe</h2>
 					<pre class="javascript"><code>var controller = Leap.loop({ enableGestures: true });
 controller.on('gesture', function(gesture) { ... }</code></pre>
 
@@ -69,29 +58,18 @@ controller.on('gesture', function(gesture) { ... }</code></pre>
 			stepLeft();
 		else
 			stepRight();</code></pre>
-
 					<a class="fragment" href="http://localhost:8000/swipe" target="_blank">Demo</a>
 				</section>
-
 				<section>
-					<h2>Iakttagelser</h2>
+					<h2>Swipe: Iakttagelser</h2>
 					<ul>
 						<li>Kräver lite träning</li>
 						<li>Fungerar bättre med fingrarna lite isär</li>
 						<li>En swipe per finger</li>
 					</ul>
 				</section>
-
-				<section>
-					<h1>Point/Tap</h1>
-					<ul>
-						<li>Hur testar vi?</li>
-						<li>Resultat</li>
-						<li>Iakttagelser</li>
-					</ul>
-				</section>
-
 				<section class="fragments">
+					<h2>Tap/Point</h2>
 					<pre class="javascript"><code>var controller = Leap.loop({ enableGestures: true });
 controller.on('gesture', function(gesture) { ... }</code></pre>
 
@@ -100,44 +78,39 @@ controller.on('gesture', function(gesture) { ... }</code></pre>
 
 					<a class="fragment" href="http://localhost:8000/piano" target="_blank">Demo</a>
 				</section>
-
 				<section>
-					<h2>Iakttagelser</h2>
+					<h2>Tap/Point: Iakttagelser</h2>
 					<ul>
-						<li>Inte intuitivt hur keyTap är definierat</li>
+						<li>Inte intuitivt hur keyTap är definierat
+							<ul>
+								<li>Fingret måste tillbaka till ursprungsläget</li>
+							</ul>
+						</li>
+						<li>screenTap är enbart framåt, inte tillbaka till ursprungsläget</li>
 						<li>Handrörelser förstör lätt</li>
 						<li>Förvånansvärt bra med flera fingrar</li>
 					</ul>
 				</section>
-
-				<section>
-					<h1>Circles</h1>
-					<ul>
-						<li>Hur testar vi?</li>
-						<li>Resultat</li>
-						<li>Iakttagelser</li>
-					</ul>
-				</section>
-
 				<section class="fragments">
+					<h2>Circle</h2>
 					<pre class="javascript"><code>var controller = Leap.loop({enableGestures: true}, function(frame) {
     if (frame.hands.length > 0) {
-        var finger = frame.hands[0].fingers[0];
+        var finger = frame.hands[0].indexFinger;
         var fingertipPosition = finger.dipPosition;
         ...
     }
 });</code></pre>
                     <pre class="fragment javascript"><code>controller.on('gesture', function(gesture) {...});</code></pre>
 
-                    <pre class="fragment javascript"><code>if (gesture.type == 'circle' && gesture.state == "stop" 
+                    <pre class="fragment javascript"><code>if (gesture.type == 'circle' && gesture.state == "stop"
                     && gesture.radius > 30) {
                     </code></pre>
 
-					<a class="fragment" href="http://localhost:8000/circles" target="_blank">Demo</a>
+					<a class="fragment" href="http://localhost:8000/rotate" target="_blank">Demo</a>
 				</section>
 
                 <section>
-                    <h2>Iakttagelser</h2>
+                    <h2>Circle: Iakttagelser</h2>
                 </section>
 
 				<section></section> <!-- Empty slide for niceliciousty. -->

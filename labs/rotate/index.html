@@ -13,6 +13,7 @@
         var context = canvas.getContext('2d');
         context.beginPath();
         context.moveTo(0, 0);
+        var lineStarted = false;
         var xdiff = 200;
         var ydiff = 400;
 
@@ -20,6 +21,12 @@
             if (frame.hands.length > 0) {
                 var finger = frame.hands[0].indexFinger;
                 var fingertipPosition = finger.dipPosition;
+
+                if(!lineStarted) {
+                    context.moveTo(fingertipPosition[0] + xdiff, ydiff - fingertipPosition[1]);
+                    lineStarted = true;
+                }
+
                 context.lineTo(fingertipPosition[0] + xdiff,
                         ydiff - fingertipPosition[1]);
                 context.strokeStyle = '#81DAF5';
