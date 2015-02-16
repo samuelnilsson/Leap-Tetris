@@ -1,0 +1,5 @@
+*.swp
+*.swo
+labs/piano/node_modules/
+labs/rotate/node_modules/
+labs/swipe/node_modules/
