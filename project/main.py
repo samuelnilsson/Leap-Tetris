@@ -1,5 +1,5 @@
 import pygame
-import l_tetrimino
+from tetriminos import l_tetrimino
 
 
 class Tetris:
