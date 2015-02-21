@@ -6,6 +6,10 @@ def enum(**enums):
     return type('Enum', (), enums)
 
 
+Color = enum(GREEN=1, RED=2, YELLOW=3, PINK=4,
+                          DARK_BLUE=5, LIGHT_BLUE=6, ORANGE=7)
+
+
 class Tetrimino:
 
     __metaclass__ = ABCMeta
