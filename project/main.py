@@ -1,4 +1,5 @@
 import pygame
+import grid
 from tetriminos import l_tetrimino
 
 
@@ -9,6 +10,7 @@ class Tetris:
         self._display_surface = None
         self._size = self.weight, self.height = 360, 720
         self._currentblock = l_tetrimino.L_tetrimino()
+        self._grid = grid.Grid()
         self.FPS = 50
         self.BLACK = (0, 0, 0)
 
@@ -40,6 +42,7 @@ class Tetris:
         """Renders the screen graphics"""
         self._display_surface.fill((self.BLACK))
         self._currentblock.on_render(self._display_surface)
+        self._grid.on_render(self._display_surface)
         pygame.display.flip()
 
     def on_cleanup(self):
