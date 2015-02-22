@@ -1,10 +1,14 @@
 import tetrimino
+import pygame
 
 
 class T_tetrimino(tetrimino.Tetrimino):
 
+    def get_color(self):
+        return tetrimino.Color.RED
+
     def load_image(self):
-        return tetrimino.pygame.image.load('assets/tetris_red.png')
+        return pygame.image.load('assets/tetris_red.png')
 
     def get_up_shape(self):
         return [[0, 0, 0, 0, 0],

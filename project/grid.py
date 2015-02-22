@@ -1,54 +1,29 @@
-import pygame
-
 from tetriminos import (i_tetrimino, j_tetrimino, l_tetrimino, o_tetrimino,
                         s_tetrimino, t_tetrimino, z_tetrimino)
-import tetrimino
-
-
-class Block:
-
-    def __init__(self, color):
-        self.SIZE = 30
-        self._image = pygame
-        self._color = color
-
-    def get_image(self):
-        if self._color == tetrimino.Color.GREEN:
-            return pygame.image.load('assets/tetris_green.png')
-        elif self._color == tetrimino.Color.RED:
-            return pygame.image.load('assets/tetris_red.png')
-        elif self._color == tetrimino.Color.YELLOW:
-            return pygame.image.load('assets/tetris_yellow.png')
-        elif self._color == tetrimino.Color.PINK:
-            return pygame.image.load('assets/tetris_pink.png')
-        elif self._color == tetrimino.Color.DARK_BLUE:
-            return pygame.image.load('assets/tetris_dark_blue.png')
-        elif self._color == tetrimino.Color.LIGHT_BLUE:
-            return pygame.image.load('assets/tetris_red.png')
-        else:
-            return pygame.image.load('assets/tetris_orange.png')
+from random import randint
 
 
 class Grid:
 
     def __init__(self):
+        self.HEIGHT = 24
+        self.WIDTH = 12
         self._grid_structure = self.init_grid_structure()
-        self._current_tetrimino = l_tetrimino.L_tetrimino()
+        self._current_tetrimino = self.new_tetrimino()
 
     def init_grid_structure(self):
         """Returns a grid structure without blocks"""
         grid = []
-        for column in range(0, 11):
+        for column in range(0, self.WIDTH):
             col = []
-            for row in range(0, 23):
+            for row in range(0, self.HEIGHT):
                 col.append(None)
             grid.append(col)
-        grid[5][5] = Block(tetrimino.Color.GREEN)
         return grid
 
     def on_render(self, surface):
-        for column in range(0, 11):
-            for row in range(0, 23):
+        for column in range(0, self.WIDTH):
+            for row in range(0, self.HEIGHT):
                 if self._grid_structure[column][row] is not None:
                     x_pos = column * self._grid_structure[column][row].SIZE
                     y_pos = row * self._grid_structure[column][row].SIZE
@@ -57,13 +32,30 @@ class Grid:
         self._current_tetrimino.on_render(surface)
 
     def on_loop(self):
-        self._current_tetrimino.on_loop()
+        if self._current_tetrimino.is_termino_down(self._grid_structure):
+            self._current_tetrimino.attach_current_tetrimino_to_grid(
+                self._grid_structure)
+            self._current_tetrimino = self.new_tetrimino()
+        else:
+            self._current_tetrimino.on_loop()
 
     def on_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                self._current_tetrimino.rotate_right()
-            if event.key == pygame.K_RIGHT:
-                self._current_tetrimino.move_right()
-            if event.key == pygame.K_LEFT:
-                self._current_tetrimino.move_left()
+        self._current_tetrimino.on_event(event, self._grid_structure)
+
+    def new_tetrimino(self):
+        """Returns a randomly generated tetrimino"""
+        random_brick = randint(0, 6)
+        if random_brick is 0:
+            return i_tetrimino.I_tetrimino(self)
+        if random_brick is 1:
+            return j_tetrimino.J_tetrimino(self)
+        if random_brick is 2:
+            return l_tetrimino.L_tetrimino(self)
+        if random_brick is 3:
+            return o_tetrimino.O_tetrimino(self)
+        if random_brick is 4:
+            return s_tetrimino.S_tetrimino(self)
+        if random_brick is 5:
+            return t_tetrimino.T_tetrimino(self)
+        if random_brick is 6:
+            return z_tetrimino.Z_tetrimino(self)

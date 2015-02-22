@@ -1,10 +1,14 @@
 import tetrimino
+import pygame
 
 
 class L_tetrimino(tetrimino.Tetrimino):
 
+    def get_color(self):
+        return tetrimino.Color.LIGHT_BLUE
+
     def load_image(self):
-        return tetrimino.pygame.image.load('assets/tetris_light_blue.png')
+        return pygame.image.load('assets/tetris_light_blue.png')
 
     def get_up_shape(self):
         return [[0, 0, 0, 0, 0],
