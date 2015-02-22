@@ -46,7 +46,8 @@ class Tetrimino:
         self._timer = 0
         self.GRID_WIDTH = grid.WIDTH
         self.GRID_HEIGHT = grid.HEIGHT
-        self._speed = 50
+        self.SPEED = 50
+        self._current_speed = 50
 
     @abstractmethod
     def get_color(self):
@@ -92,7 +93,7 @@ class Tetrimino:
             return self.get_left_shape()
 
     def on_loop(self):
-        if (self._timer == self._speed):
+        if (self._timer == self._current_speed):
             self._y += 1
             self._timer = 0
         self._timer += 1
@@ -105,6 +106,12 @@ class Tetrimino:
                 self.move_right(grid)
             if event.key == pygame.K_LEFT:
                 self.move_left(grid)
+            if event.key == pygame.K_DOWN:
+                self._timer = 0
+                self._current_speed = 5
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_DOWN:
+                self._current_speed = self.SPEED
 
     def rotate_right(self, grid):
         self._rotation = (self._rotation + 1) % 4
