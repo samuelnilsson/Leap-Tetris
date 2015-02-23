@@ -29,6 +29,7 @@ class Grid:
         self._score_board = ScoreBoard()
         self._grid_structure = self.init_grid_structure()
         self._current_tetrimino = self.new_tetrimino()
+        self._background_image = pygame.image.load('assets/background.png')
 
     def init_grid_structure(self):
         """Returns a grid structure without blocks"""
@@ -41,6 +42,7 @@ class Grid:
         return grid
 
     def on_render(self, surface):
+        surface.blit(self._background_image, (0, 0))
         for column in range(0, self.WIDTH):
             for row in range(0, self.HEIGHT):
                 if self._grid_structure[column][row] is not None:
@@ -95,7 +97,6 @@ class Grid:
         return number_of_removed_rows
 
     def remove_row(self, row):
-        print(row)
         for x in range(0, self.WIDTH):
             self._grid_structure[x][row] = None
         for tmp in range(0, row - 1):
