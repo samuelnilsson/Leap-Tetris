@@ -107,7 +107,7 @@ class Tetrimino:
             if event.key == pygame.K_LEFT:
                 self.move_left(grid)
             if event.key == pygame.K_DOWN:
-                self._timer = 0
+                self._timer = 5
                 self._current_speed = 5
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
