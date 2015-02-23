@@ -36,6 +36,7 @@ class Grid:
             self._current_tetrimino.attach_current_tetrimino_to_grid(
                 self._grid_structure)
             self._current_tetrimino = self.new_tetrimino()
+            self.remove_full_rows()
         else:
             self._current_tetrimino.on_loop()
 
@@ -59,3 +60,23 @@ class Grid:
             return t_tetrimino.T_tetrimino(self)
         if random_brick is 6:
             return z_tetrimino.Z_tetrimino(self)
+
+    def remove_full_rows(self):
+        for y in range(0, self.HEIGHT):
+            row_full = True
+            for x in range(0, self.WIDTH):
+                if self._grid_structure[x][y] is None:
+                    row_full = False
+            if row_full:
+                self.remove_row(y)
+
+    def remove_row(self, row):
+        print(row)
+        for x in range(0, self.WIDTH):
+            self._grid_structure[x][row] = None
+        for tmp in range(0, row - 1):
+            'It iterates from the bottom to the top'
+            y = row - 1 - tmp
+            for x in range(0, self.WIDTH):
+                self._grid_structure[x][y + 1] = self._grid_structure[x][y]
+                self._grid_structure[x][y] = None
