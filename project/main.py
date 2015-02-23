@@ -1,5 +1,5 @@
 import pygame
-from tetriminos import l_tetrimino
+import grid
 
 
 class Tetris:
@@ -8,7 +8,7 @@ class Tetris:
         self._running = True
         self._display_surface = None
         self._size = self.weight, self.height = 360, 720
-        self._currentblock = l_tetrimino.L_tetrimino()
+        self._grid = grid.Grid()
         self.FPS = 50
         self.BLACK = (0, 0, 0)
 
@@ -24,22 +24,16 @@ class Tetris:
         (or Leap input)"""
         if event.type == pygame.QUIT:
             self._running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                self._currentblock.rotate_right()
-            if event.key == pygame.K_RIGHT:
-                self._currentblock.move_right()
-            if event.key == pygame.K_LEFT:
-                self._currentblock.move_left()
+        self._grid.on_event(event)
 
     def on_loop(self):
         """The update function which computes changes in the game world"""
-        self._currentblock.on_loop()
+        self._grid.on_loop()
 
     def on_render(self):
         """Renders the screen graphics"""
         self._display_surface.fill((self.BLACK))
-        self._currentblock.on_render(self._display_surface)
+        self._grid.on_render(self._display_surface)
         pygame.display.flip()
 
     def on_cleanup(self):
