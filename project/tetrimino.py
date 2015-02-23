@@ -152,7 +152,7 @@ class Tetrimino:
         for x in range(0, 5):
             for y in range(0, 5):
                 if self.get_current_shape()[y][x] is not 0:
-                    if ((self._x + x) < 0) or ((self._x + x) > self.GRID_WIDTH):
+                    if (self._x + x) < 0 or (self._x + x) >= self.GRID_WIDTH:
                         return False
                     if grid[self._x + x][self._y + y] is not None:
                         return False
@@ -178,10 +178,8 @@ class Tetrimino:
                 tetrimino_y = self._y + y
                 if self.get_current_shape()[y][x] != 0:
                     if tetrimino_y is self.GRID_HEIGHT - 1:
-                        print('''Is on floor''')
                         return True
                     if grid[tetrimino_x][tetrimino_y + 1] is not None:
-                        print('''Is on other brick''')
                         return True
                 x = x - 1
             y = y - 1
