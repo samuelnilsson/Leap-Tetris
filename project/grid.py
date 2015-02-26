@@ -2,6 +2,7 @@ from tetriminos import (i_tetrimino, j_tetrimino, l_tetrimino, o_tetrimino,
                         s_tetrimino, t_tetrimino, z_tetrimino)
 from random import randint
 import pygame
+import hand_visualizer
 
 
 class ScoreBoard:
@@ -30,6 +31,7 @@ class Grid:
         self._grid_structure = self.init_grid_structure()
         self._current_tetrimino = self.new_tetrimino()
         self._background_image = pygame.image.load('assets/background.png')
+        self._hand_visualizer = hand_visualizer.Hand_visualizer()
 
     def init_grid_structure(self):
         """Returns a grid structure without blocks"""
@@ -43,6 +45,7 @@ class Grid:
 
     def on_render(self, surface):
         surface.blit(self._background_image, (0, 0))
+        self._hand_visualizer.on_render(surface)
         for column in range(0, self.WIDTH):
             for row in range(0, self.HEIGHT):
                 if self._grid_structure[column][row] is not None:
@@ -62,6 +65,7 @@ class Grid:
             self._score_board.add_points_from_rows(number_of_removed_rows)
         else:
             self._current_tetrimino.on_loop()
+        self._hand_visualizer.on_loop()
 
     def on_event(self, event):
         self._current_tetrimino.on_event(event, self._grid_structure)
