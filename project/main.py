@@ -1,5 +1,4 @@
 import pygame
-import grid
 
 
 class Tetris:
