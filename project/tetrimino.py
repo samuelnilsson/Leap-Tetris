@@ -2,8 +2,6 @@ import pygame
 from abc import ABCMeta, abstractmethod
 from random import randrange
 
-import pdb
-
 
 def enum(**enums):
     return type('Enum', (), enums)
