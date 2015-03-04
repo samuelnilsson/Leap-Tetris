@@ -109,20 +109,21 @@ class Tetrimino:
             self._timer = 0
         self._timer += 1
 
-    def on_event(self, event, grid):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                self.rotate_right(grid)
-            if event.key == pygame.K_RIGHT:
-                self.move_right(grid)
-            if event.key == pygame.K_LEFT:
-                self.move_left(grid)
-            if event.key == pygame.K_DOWN:
-                self._timer = 5
-                self._current_speed = 5
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_DOWN:
-                self._current_speed = self.SPEED
+    def on_event(self, event, grid, leap_mode):
+        if not leap_mode:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    self.rotate_right(grid)
+                if event.key == pygame.K_RIGHT:
+                    self.move_right(grid)
+                if event.key == pygame.K_LEFT:
+                    self.move_left(grid)
+                if event.key == pygame.K_DOWN:
+                    self._timer = 5
+                    self._current_speed = 5
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_DOWN:
+                    self._current_speed = self.SPEED
 
     def rotate_right(self, grid):
         self._rotation = (self._rotation + 1) % 4

@@ -4,6 +4,7 @@ from random import randint
 import copy
 import pygame
 import hand_visualizer
+import mode_switcher
 
 
 class ScoreBoard:
@@ -35,6 +36,7 @@ class Grid:
         self._shadowed_tetrimino.set_transparent(True)
         self._background_image = pygame.image.load('assets/background.png')
         self._hand_visualizer = hand_visualizer.Hand_visualizer()
+        self._mode_switcher = mode_switcher.Mode_switcher()
 
     def init_grid_structure(self):
         """Returns a grid structure without blocks"""
@@ -59,6 +61,7 @@ class Grid:
         self.render_where_to_land(surface)
         self._current_tetrimino.on_render(surface)
         self._score_board.on_render(surface)
+        self._mode_switcher.on_render(surface)
 
     def on_loop(self):
         if self._current_tetrimino.is_termino_down(self._grid_structure):
@@ -74,7 +77,9 @@ class Grid:
         self._hand_visualizer.on_loop()
 
     def on_event(self, event):
-        self._current_tetrimino.on_event(event, self._grid_structure)
+        self._current_tetrimino.on_event(
+            event, self._grid_structure, self._mode_switcher._leap_mode)
+        self._mode_switcher.on_event(event)
 
     def new_tetrimino(self):
         """Returns a randomly generated tetrimino"""
