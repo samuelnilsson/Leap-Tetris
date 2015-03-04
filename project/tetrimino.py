@@ -37,17 +37,18 @@ class Tetrimino:
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, grid):
+    def __init__(self, grid, transparent):
         self.Rotation = enum(UP=1, RIGHT=2, DOWN=3, LEFT=4)
         self._rotation = self.Rotation.UP
         self._position = self._x, self._y = 0, 0
-        self._image = self.load_image()
         self.BRICK_SIZE = 30
+        self._image = self.load_image()
         self._timer = 0
         self.GRID_WIDTH = grid.WIDTH
         self.GRID_HEIGHT = grid.HEIGHT
         self.SPEED = 50
         self._current_speed = 50
+        self._transparent = transparent
 
     @abstractmethod
     def get_color(self):
@@ -81,6 +82,16 @@ class Tetrimino:
         zeros where there is no brick, ones where there is a brick and two
         where the rotation point is"""
         pass
+
+    def set_transparent(self, transparent):
+        self._transparent = transparent
+        if not transparent:
+            self._image = self.load_image()
+        else:
+            self._image = pygame.image.load('assets/transparent.png')
+
+    def get_transparent(self):
+        return self._transparent
 
     def get_current_shape(self):
         if self._rotation == self.Rotation.UP:

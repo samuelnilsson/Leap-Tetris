@@ -1,6 +1,7 @@
 from tetriminos import (i_tetrimino, j_tetrimino, l_tetrimino, o_tetrimino,
                         s_tetrimino, t_tetrimino, z_tetrimino)
 from random import randint
+import copy
 import pygame
 import hand_visualizer
 
@@ -15,7 +16,7 @@ class ScoreBoard:
         self._color = (255, 255, 255)
 
     def add_points_from_rows(self, number_of_removed_rows):
-        self._points += 10*(number_of_removed_rows**2)
+        self._points += 10 * (number_of_removed_rows**2)
 
     def on_render(self, surface):
         text_surface = self._font.render(str(self._points), True, self._color)
@@ -30,6 +31,8 @@ class Grid:
         self._score_board = ScoreBoard()
         self._grid_structure = self.init_grid_structure()
         self._current_tetrimino = self.new_tetrimino()
+        self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
+        self._shadowed_tetrimino.set_transparent(True)
         self._background_image = pygame.image.load('assets/background.png')
         self._hand_visualizer = hand_visualizer.Hand_visualizer()
 
@@ -53,6 +56,7 @@ class Grid:
                     y_pos = row * self._grid_structure[column][row].SIZE
                     surface.blit(self._grid_structure[column][row].get_image(),
                                  (x_pos, y_pos))
+        self.render_where_to_land(surface)
         self._current_tetrimino.on_render(surface)
         self._score_board.on_render(surface)
 
@@ -61,6 +65,8 @@ class Grid:
             self._current_tetrimino.attach_current_tetrimino_to_grid(
                 self._grid_structure)
             self._current_tetrimino = self.new_tetrimino()
+            self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
+            self._shadowed_tetrimino.set_transparent(True)
             number_of_removed_rows = self.remove_full_rows()
             self._score_board.add_points_from_rows(number_of_removed_rows)
         else:
@@ -74,19 +80,19 @@ class Grid:
         """Returns a randomly generated tetrimino"""
         random_brick = randint(0, 6)
         if random_brick is 0:
-            return i_tetrimino.I_tetrimino(self)
+            return i_tetrimino.I_tetrimino(self, False)
         if random_brick is 1:
-            return j_tetrimino.J_tetrimino(self)
+            return j_tetrimino.J_tetrimino(self, False)
         if random_brick is 2:
-            return l_tetrimino.L_tetrimino(self)
+            return l_tetrimino.L_tetrimino(self, False)
         if random_brick is 3:
-            return o_tetrimino.O_tetrimino(self)
+            return o_tetrimino.O_tetrimino(self, False)
         if random_brick is 4:
-            return s_tetrimino.S_tetrimino(self)
+            return s_tetrimino.S_tetrimino(self, False)
         if random_brick is 5:
-            return t_tetrimino.T_tetrimino(self)
+            return t_tetrimino.T_tetrimino(self, False)
         if random_brick is 6:
-            return z_tetrimino.Z_tetrimino(self)
+            return z_tetrimino.Z_tetrimino(self, False)
 
     def remove_full_rows(self):
         number_of_removed_rows = 0
@@ -109,3 +115,14 @@ class Grid:
             for x in range(0, self.WIDTH):
                 self._grid_structure[x][y + 1] = self._grid_structure[x][y]
                 self._grid_structure[x][y] = None
+
+    def render_where_to_land(self, surface):
+        """Renders a shadow showing where the terimino will land"""
+        self._shadowed_tetrimino._position = self._current_tetrimino._position
+        self._shadowed_tetrimino._x = self._current_tetrimino._x
+        self._shadowed_tetrimino._y = self._current_tetrimino._y
+        self._shadowed_tetrimino._rotation = self._current_tetrimino._rotation
+        while not self._shadowed_tetrimino.is_termino_down(
+                self._grid_structure):
+            self._shadowed_tetrimino._y += 1
+        self._shadowed_tetrimino.on_render(surface)
