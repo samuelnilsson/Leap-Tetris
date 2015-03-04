@@ -1,5 +1,6 @@
 import pygame
 from abc import ABCMeta, abstractmethod
+from random import randrange
 
 
 def enum(**enums):
@@ -40,7 +41,7 @@ class Tetrimino:
     def __init__(self, grid, transparent):
         self.Rotation = enum(UP=1, RIGHT=2, DOWN=3, LEFT=4)
         self._rotation = self.Rotation.UP
-        self._position = self._x, self._y = 0, 0
+        self._position = self._x, self._y = randrange(0, grid.WIDTH-3), 0 # -3: -2 for for "half tetrimino width" and -1 for zero indexed array.
         self.BRICK_SIZE = 30
         self._image = self.load_image()
         self._timer = 0
