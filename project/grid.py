@@ -32,6 +32,7 @@ class Grid:
         self._current_tetrimino = self.new_tetrimino()
         self._background_image = pygame.image.load('assets/background.png')
         self._hand_visualizer = hand_visualizer.Hand_visualizer()
+        self._paused = False
 
     def init_grid_structure(self):
         """Returns a grid structure without blocks"""
@@ -55,20 +56,35 @@ class Grid:
                                  (x_pos, y_pos))
         self._current_tetrimino.on_render(surface)
         self._score_board.on_render(surface)
+        if self._paused:
+            self.render_paused_text(surface)
+
+    def render_paused_text(self, surface):
+        fontsize = 70
+        font = pygame.font.SysFont('Arial', fontsize)
+        white = (255, 255, 255)
+        text_surface = font.render('Paused', True, white)
+        position = (60, 300)
+        surface.blit(text_surface, position)
 
     def on_loop(self):
-        if self._current_tetrimino.is_termino_down(self._grid_structure):
-            self._current_tetrimino.attach_current_tetrimino_to_grid(
-                self._grid_structure)
-            self._current_tetrimino = self.new_tetrimino()
-            number_of_removed_rows = self.remove_full_rows()
-            self._score_board.add_points_from_rows(number_of_removed_rows)
-        else:
-            self._current_tetrimino.on_loop()
-        self._hand_visualizer.on_loop()
+        if not self._paused:
+            if self._current_tetrimino.is_termino_down(self._grid_structure):
+                self._current_tetrimino.attach_current_tetrimino_to_grid(
+                    self._grid_structure)
+                self._current_tetrimino = self.new_tetrimino()
+                number_of_removed_rows = self.remove_full_rows()
+                self._score_board.add_points_from_rows(number_of_removed_rows)
+            else:
+                self._current_tetrimino.on_loop()
+            self._hand_visualizer.on_loop()
 
     def on_event(self, event):
-        self._current_tetrimino.on_event(event, self._grid_structure)
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_p:
+                self._paused = not self._paused
+        if not self._paused:
+            self._current_tetrimino.on_event(event, self._grid_structure)
 
     def new_tetrimino(self):
         """Returns a randomly generated tetrimino"""
