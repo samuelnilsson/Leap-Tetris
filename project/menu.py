@@ -1,6 +1,7 @@
 import pygame
 import math
 
+
 class MenuItem:
 
     def __init__(self, name, execute):
@@ -63,7 +64,7 @@ class Menu:
             pos += 400
 
     def on_loop(self):
-        pass
+        return (False, 0)
 
     def on_event(self, event):
         for menu_item in self._menu_items:
