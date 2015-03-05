@@ -88,6 +88,8 @@ class Grid:
                 self._current_tetrimino.attach_current_tetrimino_to_grid(
                     self._grid_structure)
                 self._current_tetrimino = self.new_tetrimino()
+                self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
+                self._shadowed_tetrimino.set_transparent(True)
                 number_of_removed_rows = self.remove_full_rows()
                 self._score_board.add_points_from_rows(number_of_removed_rows)
             else:
@@ -150,7 +152,7 @@ class Grid:
 
 
     def render_where_to_land(self, surface):
-        """Renders a shadow showing where the terimino will land"""
+        """Renders a shadow showing where the tetrimino will land"""
         self._shadowed_tetrimino._position = self._current_tetrimino._position
         self._shadowed_tetrimino._x = self._current_tetrimino._x
         self._shadowed_tetrimino._y = self._current_tetrimino._y
