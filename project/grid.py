@@ -40,7 +40,7 @@ class Grid:
         self._hand_visualizer = hand_visualizer.Hand_visualizer()
         self._paused = False
         self._mode_switcher = mode_switcher.Mode_switcher()
-        self._controls = controls.LeapControls()
+        self._controls = controls.KeyboardControls()
 
 
     def init_grid_structure(self):

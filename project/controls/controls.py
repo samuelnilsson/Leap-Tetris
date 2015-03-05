@@ -1,5 +1,6 @@
 import sys, thread, time, os, inspect
-import events
+import pygame
+from events import Events
 
 from sys import platform as _platform
 
@@ -17,21 +18,25 @@ from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
 class KeyboardControls:
  	def on_event(self, event):
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_UP:
-				self.rotate_right(grid)
-			if event.key == pygame.K_RIGHT:
-				self.move_right(grid)
-			if event.key == pygame.K_LEFT:
-				self.move_left(grid)
-			if event.key == pygame.K_DOWN:
-				self._timer = 5
-				self._current_speed = 5
-		if event.type == pygame.KEYUP:
-			if event.key == pygame.K_DOWN:
-				self._current_speed = self.SPEED
-			if event.key == pygame.K_p:
-				self._paused = not self._paused
+ 		generated_event = self._generate_event(event)
+		if generated_event is not None:
+			pygame.event.post(pygame.event.Event(generated_event))
+
+	def _generate_event(self, pygame_event):
+		if pygame_event.type == pygame.KEYDOWN:
+			return {
+				pygame.K_UP: 	Events.ROTATE_RIGHT,
+				pygame.K_RIGHT: Events.MOVE_RIGHT,
+				pygame.K_LEFT: 	Events.MOVE_LEFT,
+				pygame.K_DOWN:	Events.DOWN_FASTER
+			}.get(pygame_event.key, None)
+		if pygame_event.type == pygame.KEYUP:
+			return {
+				pygame.K_DOWN: 	Events.DOWN_NORMAL,
+				pygame.K_p: 	Events.PAUSE_TOGGLE
+			}.get(pygame_event.key, None)
+
+		return None
 
 
 class LeapControls(Leap.Listener):
@@ -88,41 +93,38 @@ class LeapControls(Leap.Listener):
 				# 	normal.roll * Leap.RAD_TO_DEG,
 				# 	direction.yaw * Leap.RAD_TO_DEG)
 
-		# Get gestures
 		for gesture in frame.gestures():
 			if gesture.type == Leap.Gesture.TYPE_CIRCLE:
 				circle = CircleGesture(gesture)
 
-				# Determine clock direction using the angle between the pointable and the circle normal
 				if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
 					clockwiseness = "clockwise"
 				else:
 					clockwiseness = "counterclockwise"
 
-				# Calculate the angle swept since the last frame
 				swept_angle = 0
 				if circle.state != Leap.Gesture.STATE_START:
 					previous_update = CircleGesture(controller.frame(1).gesture(circle.id))
 					swept_angle =  (circle.progress - previous_update.progress) * 2 * Leap.PI
 
-				print "  Circle id: %d, %s, progress: %f, radius: %f, angle: %f degrees, %s" % (
-						gesture.id, self.state_names[gesture.state],
-						circle.progress, circle.radius, swept_angle * Leap.RAD_TO_DEG, clockwiseness)
+				# print "  Circle id: %d, %s, progress: %f, radius: %f, angle: %f degrees, %s" % (
+				# 		gesture.id, self.state_names[gesture.state],
+				# 		circle.progress, circle.radius, swept_angle * Leap.RAD_TO_DEG, clockwiseness)
 
 			if gesture.type == Leap.Gesture.TYPE_SWIPE:
 				swipe = SwipeGesture(gesture)
-				print "  Swipe id: %d, state: %s, position: %s, direction: %s, speed: %f" % (
-						gesture.id, self.state_names[gesture.state],
-						swipe.position, swipe.direction, swipe.speed)
+				# print "  Swipe id: %d, state: %s, position: %s, direction: %s, speed: %f" % (
+				# 		gesture.id, self.state_names[gesture.state],
+				# 		swipe.position, swipe.direction, swipe.speed)
 
 			if gesture.type == Leap.Gesture.TYPE_KEY_TAP:
 				keytap = KeyTapGesture(gesture)
-				print "  Key Tap id: %d, %s, position: %s, direction: %s" % (
-						gesture.id, self.state_names[gesture.state],
-						keytap.position, keytap.direction )
+				# print "  Key Tap id: %d, %s, position: %s, direction: %s" % (
+				# 		gesture.id, self.state_names[gesture.state],
+				# 		keytap.position, keytap.direction )
 
 			if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:
 				screentap = ScreenTapGesture(gesture)
-				print "  Screen Tap id: %d, %s, position: %s, direction: %s" % (
-						gesture.id, self.state_names[gesture.state],
-						screentap.position, screentap.direction )
+				# print "  Screen Tap id: %d, %s, position: %s, direction: %s" % (
+				# 		gesture.id, self.state_names[gesture.state],
+				# 		screentap.position, screentap.direction )

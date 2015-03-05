@@ -7,7 +7,7 @@ Events = tetris.enum(
 	DOWN_NORMAL		= pygame.USEREVENT + 2,
 	MOVE_LEFT 		= pygame.USEREVENT + 3,
 	MOVE_RIGHT		= pygame.USEREVENT + 4,
-	PAUSE 			= pygame.USEREVENT + 5,
+	PAUSE_TOGGLE 	= pygame.USEREVENT + 5,
 	ROTATE_LEFT		= pygame.USEREVENT + 6,
 	ROTATE_RIGHT	= pygame.USEREVENT + 7
 )

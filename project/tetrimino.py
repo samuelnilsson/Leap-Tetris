@@ -2,7 +2,7 @@ import pygame
 from abc import ABCMeta, abstractmethod
 from random import randrange
 import tetris
-import controls.events
+from controls.events import Events
 
 
 Color = tetris.enum(
@@ -116,16 +116,16 @@ class Tetrimino:
         self._timer += 1
 
     def on_event(self, event, grid):
-        if event.type == controls.events.Events.ROTATE_RIGHT:
+        if event.type == Events.ROTATE_RIGHT:
             self.rotate_right(grid)
-        if event.type == controls.events.Events.MOVE_RIGHT:
+        if event.type == Events.MOVE_RIGHT:
             self.move_right(grid)
-        if event.type == controls.events.Events.MOVE_LEFT:
+        if event.type == Events.MOVE_LEFT:
             self.move_left(grid)
-        if event.type == controls.events.Events.DOWN_FASTER:
+        if event.type == Events.DOWN_FASTER:
             self._timer = 5
             self._current_speed = 5
-        if event.type == controls.events.Events.DOWN_NORMAL:
+        if event.type == Events.DOWN_NORMAL:
             self._current_speed = self.SPEED
 
     def rotate_right(self, grid):
