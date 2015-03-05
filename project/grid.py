@@ -82,12 +82,17 @@ class Grid:
         surface.blit(text_surface, position)
 
 
-    def on_loop(self):
+    def on_loop(self, finished):
         if not self._paused:
             if self._current_tetrimino.is_termino_down(self._grid_structure):
                 self._current_tetrimino.attach_current_tetrimino_to_grid(
                     self._grid_structure)
                 self._current_tetrimino = self.new_tetrimino()
+                if self._current_tetrimino.is_in_allowed_state(self._grid_structure):
+                    '#Game lost'
+                    print('game lost')
+                    finished = (True, self._score_board._points)
+                    pass
                 self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
                 self._shadowed_tetrimino.set_transparent(True)
                 number_of_removed_rows = self.remove_full_rows()
@@ -95,7 +100,6 @@ class Grid:
             else:
                 self._current_tetrimino.on_loop()
             self._hand_visualizer.on_loop()
-
 
     def on_event(self, event):
         if event.type == pygame.KEYUP:

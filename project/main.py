@@ -9,6 +9,7 @@ class Tetris:
         self._display_surface = None
         self._size = self.weight, self.height = 360, 720
         self._grid = grid.Grid()
+        self._game_finished = (False, 0)
         self.FPS = 50
         self.BLACK = (0, 0, 0)
 
@@ -28,7 +29,7 @@ class Tetris:
 
     def on_loop(self):
         """The update function which computes changes in the game world"""
-        self._grid.on_loop()
+        self._grid.on_loop(self._game_finished)
 
     def on_render(self):
         """Renders the screen graphics"""
@@ -44,8 +45,6 @@ class Tetris:
             self._running = False
 
         while self._running:
-            for event in pygame.event.get():
-                self.on_event(event)
             self.on_loop()
             self.on_render()
             pygame.time.delay(1000/self.FPS)

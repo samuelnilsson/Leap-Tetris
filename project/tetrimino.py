@@ -197,3 +197,18 @@ class Tetrimino:
                 x = x - 1
             y = y - 1
         return False
+
+    def is_in_allowed_state(self, grid):
+        y = 4
+        while y >= 0:
+            x = 4
+            while x >= 0:
+                tetrimino_x = self._x + x
+                tetrimino_y = self._y + y
+                if self.get_current_shape()[y][x] != 0:
+                    if grid[tetrimino_x][tetrimino_y] is not None:
+                        return True
+                x = x - 1
+            y = y - 1
+        return False
+
