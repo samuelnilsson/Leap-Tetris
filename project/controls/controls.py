@@ -20,6 +20,10 @@ class BaseControls: # TODO: Make this abstract?
 	def _post_event(self, event):
 		pygame.event.post(pygame.event.Event(event))
 
+	def on_event(self, event):
+		return
+
+
 class KeyboardControls(BaseControls):
 	def __init__(self):
 		self._keyup_events = {
@@ -57,10 +61,7 @@ class LeapControls(Leap.Listener, BaseControls):
 		self._controller = Leap.Controller()
 		self._controller.add_listener(self)
 		self._hasHands = False
-
-	def on_event(self, event):
-		# print event
-		return
+		self.previous_frame = None
 
 	def on_init(self, controller):
 		print "Initialized"
@@ -82,37 +83,17 @@ class LeapControls(Leap.Listener, BaseControls):
 	def on_frame(self, controller):
 		frame = controller.frame()
 
-		if self._hasHands:
-			self._post_event(Events.ROTATE_RIGHT)
+		# if self._hasHands:
+		# 	self._post_event(Events.ROTATE_RIGHT)
 
 		if len(frame.hands) == 0:
 			self._hasHands = False
+			self._hand = None
 		else:
 			self._hasHands = True
-			print "Has hands :)"
-			for hand in frame.hands:
-				normal = hand.palm_normal
-				direction = hand.direction
+			self._hand = frame.hands[0]
 
-		for gesture in frame.gestures():
-			if gesture.type == Leap.Gesture.TYPE_CIRCLE:
-				circle = CircleGesture(gesture)
+		if self._hand is not None:
 
-				if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
-					clockwiseness = "clockwise"
-				else:
-					clockwiseness = "counterclockwise"
 
-				swept_angle = 0
-				if circle.state != Leap.Gesture.STATE_START:
-					previous_update = CircleGesture(controller.frame(1).gesture(circle.id))
-					swept_angle =  (circle.progress - previous_update.progress) * 2 * Leap.PI
-
-			if gesture.type == Leap.Gesture.TYPE_SWIPE:
-				swipe = SwipeGesture(gesture)
-
-			if gesture.type == Leap.Gesture.TYPE_KEY_TAP:
-				keytap = KeyTapGesture(gesture)
-
-			if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:
-				screentap = ScreenTapGesture(gesture)
+		self.previous_frame = frame
