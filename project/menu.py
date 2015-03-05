@@ -27,6 +27,7 @@ class MenuItem:
         text_surface = font.render(self._name, True, (120, 120, 120))
         surface.blit(text_surface, (position[0] - text_surface.get_width() / 2, position[1] - 35))
 
+
     def on_event(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
@@ -55,6 +56,7 @@ class Menu:
         return [play, quit]
 
     def on_render(self, surface):
+        self.render_background(surface)
         pos = 150
         for menu_item in self._menu_items:
             menu_item.on_render(surface, (180, pos))
@@ -66,3 +68,7 @@ class Menu:
     def on_event(self, event):
         for menu_item in self._menu_items:
             menu_item.on_event(event)
+
+    def render_background(self, surface):
+        background_image = pygame.image.load('assets/background.png')
+        surface.blit(background_image, (0, 0))
