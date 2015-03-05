@@ -5,6 +5,7 @@ import copy
 import pygame
 import hand_visualizer
 import mode_switcher
+import controls.controls as controls
 
 
 class ScoreBoard:
@@ -39,6 +40,7 @@ class Grid:
         self._hand_visualizer = hand_visualizer.Hand_visualizer()
         self._paused = False
         self._mode_switcher = mode_switcher.Mode_switcher()
+        self._controls = controls.LeapControls()
 
 
     def init_grid_structure(self):
@@ -68,7 +70,7 @@ class Grid:
         self._current_tetrimino.on_render(surface)
         self._score_board.on_render(surface)
         self._mode_switcher.on_render(surface)
-        
+
         if self._paused:
             self.render_paused_text(surface)
 
@@ -96,12 +98,10 @@ class Grid:
 
 
     def on_event(self, event):
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_p:
-                self._paused = not self._paused
+        self._controls.on_event(event)
 
         if not self._paused:
-            self._current_tetrimino.on_event(event, self._grid_structure, self._mode_switcher._leap_mode)
+            self._current_tetrimino.on_event(event, self._grid_structure)
 
         self._mode_switcher.on_event(event)
 

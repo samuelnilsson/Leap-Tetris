@@ -1,5 +1,10 @@
+def enum(**enums):
+    return type('Enum', (), enums)
+
+
 import pygame
 import grid
+import controls
 
 
 class Tetris:

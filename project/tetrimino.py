@@ -1,14 +1,19 @@
 import pygame
 from abc import ABCMeta, abstractmethod
 from random import randrange
+import tetris
+import controls.events
 
 
-def enum(**enums):
-    return type('Enum', (), enums)
-
-
-Color = enum(
-    GREEN=1, RED=2, YELLOW=3, PINK=4, DARK_BLUE=5, LIGHT_BLUE=6, ORANGE=7)
+Color = tetris.enum(
+    GREEN=1,
+    RED=2,
+    YELLOW=3,
+    PINK=4,
+    DARK_BLUE=5,
+    LIGHT_BLUE=6,
+    ORANGE=7
+)
 
 
 class Block:
@@ -39,7 +44,7 @@ class Tetrimino:
     __metaclass__ = ABCMeta
 
     def __init__(self, grid, transparent):
-        self.Rotation = enum(UP=1, RIGHT=2, DOWN=3, LEFT=4)
+        self.Rotation = tetris.enum(UP=1, RIGHT=2, DOWN=3, LEFT=4)
         self._rotation = self.Rotation.UP
         self._position = self._x, self._y = randrange(0, grid.WIDTH-3), 0 # -3: -2 for for "half tetrimino width" and -1 for zero indexed array.
         self.BRICK_SIZE = 30
@@ -110,21 +115,18 @@ class Tetrimino:
             self._timer = 0
         self._timer += 1
 
-    def on_event(self, event, grid, leap_mode):
-        if not leap_mode:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.rotate_right(grid)
-                if event.key == pygame.K_RIGHT:
-                    self.move_right(grid)
-                if event.key == pygame.K_LEFT:
-                    self.move_left(grid)
-                if event.key == pygame.K_DOWN:
-                    self._timer = 5
-                    self._current_speed = 5
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_DOWN:
-                    self._current_speed = self.SPEED
+    def on_event(self, event, grid):
+        if event.type == controls.events.Events.ROTATE_RIGHT:
+            self.rotate_right(grid)
+        if event.type == controls.events.Events.MOVE_RIGHT:
+            self.move_right(grid)
+        if event.type == controls.events.Events.MOVE_LEFT:
+            self.move_left(grid)
+        if event.type == controls.events.Events.DOWN_FASTER:
+            self._timer = 5
+            self._current_speed = 5
+        if event.type == controls.events.Events.DOWN_NORMAL:
+            self._current_speed = self.SPEED
 
     def rotate_right(self, grid):
         self._rotation = (self._rotation + 1) % 4
