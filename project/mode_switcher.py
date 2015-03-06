@@ -1,7 +1,7 @@
 import pygame
 
 
-class Mode_switcher:
+class ModeSwitcher:
 
     def __init__(self):
         self._leap_mode = False

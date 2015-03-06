@@ -1,3 +1,7 @@
+def enum(**enums):
+    return type('Enum', (), enums)
+
+
 import pygame
 import grid
 import menu
@@ -56,9 +60,11 @@ class Tetris:
                 self._switch_to_game = False
             for event in pygame.event.get():
                 self.on_event(event)
+
             self.on_loop()
             self.on_render()
-            pygame.time.delay(1000/self.FPS)
+            pygame.time.delay(1000 / self.FPS)
+
         self.on_cleanup()
 
 

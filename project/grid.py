@@ -1,10 +1,10 @@
-from tetriminos import (i_tetrimino, j_tetrimino, l_tetrimino, o_tetrimino,
-                        s_tetrimino, t_tetrimino, z_tetrimino)
+from tetriminos import i_tetrimino,j_tetrimino,l_tetrimino,o_tetrimino, s_tetrimino, t_tetrimino, z_tetrimino
 from random import randint
 import copy
 import pygame
-import hand_visualizer
-import mode_switcher
+from hand_visualizer import HandVisualizer
+from mode_switcher import ModeSwitcher
+from controls.controls import KeyboardControls, LeapControls, Events
 
 
 class ScoreBoard:
@@ -17,16 +17,14 @@ class ScoreBoard:
         self._color = (255, 255, 255)
 
     def add_points_from_rows(self, number_of_removed_rows):
-        self._points += 10 * (number_of_removed_rows**2)
+        self._points += 10 * (number_of_removed_rows ** 2)
 
     def on_render(self, surface):
         text_surface = self._font.render(str(self._points), True, self._color)
         surface.blit(text_surface, self.POSITION)
 
 
-
 class Grid:
-
     def __init__(self):
         self.HEIGHT = 24
         self.WIDTH = 12
@@ -34,12 +32,12 @@ class Grid:
         self._grid_structure = self.init_grid_structure()
         self._current_tetrimino = self.new_tetrimino()
         self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
-        self._shadowed_tetrimino.set_transparent(True)
         self._background_image = pygame.image.load('assets/background.png')
-        self._hand_visualizer = hand_visualizer.Hand_visualizer()
+        self._hand_visualizer = HandVisualizer()
         self._paused = False
-        self._mode_switcher = mode_switcher.Mode_switcher()
-
+        self._mode_switcher = ModeSwitcher()
+        self._controls = LeapControls()
+        self._shadowed_tetrimino.set_transparent(True)
 
     def init_grid_structure(self):
         """Returns a grid structure without blocks"""
@@ -50,7 +48,6 @@ class Grid:
                 col.append(None)
             grid.append(col)
         return grid
-
 
     def on_render(self, surface):
         surface.blit(self._background_image, (0, 0))
@@ -68,10 +65,9 @@ class Grid:
         self._current_tetrimino.on_render(surface)
         self._score_board.on_render(surface)
         self._mode_switcher.on_render(surface)
-        
+
         if self._paused:
             self.render_paused_text(surface)
-
 
     def render_paused_text(self, surface):
         fontsize = 70
@@ -80,7 +76,6 @@ class Grid:
         text_surface = font.render('Paused', True, white)
         position = (60, 300)
         surface.blit(text_surface, position)
-
 
     def on_loop(self):
         if not self._paused:
@@ -96,17 +91,13 @@ class Grid:
                 self._current_tetrimino.on_loop()
             self._hand_visualizer.on_loop()
 
-
     def on_event(self, event):
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_p:
-                self._paused = not self._paused
+        self._controls.on_event(event)
 
         if not self._paused:
-            self._current_tetrimino.on_event(event, self._grid_structure, self._mode_switcher._leap_mode)
+            self._current_tetrimino.on_event(event, self._grid_structure)
 
         self._mode_switcher.on_event(event)
-
 
     def new_tetrimino(self):
         """Returns a randomly generated tetrimino"""
@@ -126,7 +117,6 @@ class Grid:
         if random_brick is 6:
             return z_tetrimino.Z_tetrimino(self, False)
 
-
     def remove_full_rows(self):
         number_of_removed_rows = 0
         for y in range(0, self.HEIGHT):
@@ -139,7 +129,6 @@ class Grid:
                 number_of_removed_rows += 1
         return number_of_removed_rows
 
-
     def remove_row(self, row):
         for x in range(0, self.WIDTH):
             self._grid_structure[x][row] = None
@@ -149,7 +138,6 @@ class Grid:
             for x in range(0, self.WIDTH):
                 self._grid_structure[x][y + 1] = self._grid_structure[x][y]
                 self._grid_structure[x][y] = None
-
 
     def render_where_to_land(self, surface):
         """Renders a shadow showing where the tetrimino will land"""
