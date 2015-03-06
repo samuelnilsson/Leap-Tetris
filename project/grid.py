@@ -25,22 +25,20 @@ class ScoreBoard:
         surface.blit(text_surface, self.POSITION)
 
 
-
 class Grid:
-
     def __init__(self):
-        self.HEIGHT = 24
-        self.WIDTH = 12
-        self._score_board = ScoreBoard()
-        self._grid_structure = self.init_grid_structure()
-        self._current_tetrimino = self.new_tetrimino()
+        self.HEIGHT              = 24
+        self.WIDTH               = 12
+        self._score_board        = ScoreBoard()
+        self._grid_structure     = self.init_grid_structure()
+        self._current_tetrimino  = self.new_tetrimino()
         self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
+        self._background_image   = pygame.image.load('assets/background.png')
+        self._hand_visualizer    = hand_visualizer.Hand_visualizer()
+        self._paused             = False
+        self._mode_switcher      = mode_switcher.Mode_switcher()
+        self._controls           = controls.LeapControls()
         self._shadowed_tetrimino.set_transparent(True)
-        self._background_image = pygame.image.load('assets/background.png')
-        self._hand_visualizer = hand_visualizer.Hand_visualizer()
-        self._paused = False
-        self._mode_switcher = mode_switcher.Mode_switcher()
-        self._controls = controls.LeapControls()
 
 
     def init_grid_structure(self):

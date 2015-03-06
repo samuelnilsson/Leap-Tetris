@@ -19,8 +19,7 @@ class Tetris:
 
     def on_init(self):
         pygame.init()
-        self._display_surface = pygame.display.set_mode(
-            self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self._display_surface = pygame.display.set_mode(self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         pygame.display.set_caption("Leap Tetris!")
         self._running = True
 
@@ -29,6 +28,7 @@ class Tetris:
         (or Leap input)"""
         if event.type == pygame.QUIT:
             self._running = False
+
         self._grid.on_event(event)
 
     def on_loop(self):
@@ -51,9 +51,11 @@ class Tetris:
         while self._running:
             for event in pygame.event.get():
                 self.on_event(event)
+
             self.on_loop()
             self.on_render()
             pygame.time.delay(1000/self.FPS)
+
         self.on_cleanup()
 
 
