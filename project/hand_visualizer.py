@@ -2,7 +2,7 @@ import pygame
 import math
 
 
-class Hand_visualizer:
+class HandVisualizer:
 
     def __init__(self):
         self.RED = (0, 255, 0)
