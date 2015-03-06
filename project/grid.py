@@ -1,11 +1,10 @@
-from tetriminos import (i_tetrimino, j_tetrimino, l_tetrimino, o_tetrimino,
-                        s_tetrimino, t_tetrimino, z_tetrimino)
+from tetriminos import i_tetrimino,j_tetrimino,l_tetrimino,o_tetrimino, s_tetrimino, t_tetrimino, z_tetrimino
 from random import randint
 import copy
 import pygame
-import hand_visualizer
-import mode_switcher
-import controls.controls as controls
+from hand_visualizer import HandVisualizer
+from mode_switcher import ModeSwitcher
+from controls.controls import KeyboardControls, LeapControls, Events
 
 
 class ScoreBoard:
@@ -34,10 +33,10 @@ class Grid:
         self._current_tetrimino = self.new_tetrimino()
         self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
         self._background_image = pygame.image.load('assets/background.png')
-        self._hand_visualizer = hand_visualizer.Hand_visualizer()
+        self._hand_visualizer = HandVisualizer()
         self._paused = False
-        self._mode_switcher = mode_switcher.ModeSwitcher()
-        self._controls = controls.LeapControls()
+        self._mode_switcher = ModeSwitcher()
+        self._controls = LeapControls()
         self._shadowed_tetrimino.set_transparent(True)
 
     def init_grid_structure(self):
