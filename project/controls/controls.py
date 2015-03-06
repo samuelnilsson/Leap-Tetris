@@ -15,16 +15,14 @@ else:
     sys.path.insert(0, "lib")
     import Leap
 
-# from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
+class BaseControls(object):     # TODO: Make this abstract?
+    def on_event(self, event):
+        pass
 
-class BaseControls:     # TODO: Make this abstract?
     def _post_event(self, event):
         if event is not None:
             pygame.event.post(pygame.event.Event(event))
-
-    def on_event(self, event):
-        return
 
 
 class KeyboardControls(BaseControls):
@@ -47,8 +45,8 @@ class KeyboardControls(BaseControls):
 
     def _generate_event(self, pygame_event):
         try:
-            eventlist = self._eventMap.get(pygame_event.type, None)
-            event = eventlist.get(pygame_event.key, None)
+            eventlist = self._eventMap.get(pygame_event.type)
+            event = eventlist.get(pygame_event.key)
             return event
         except:
             return None
@@ -68,6 +66,25 @@ class LeapControls(Leap.Listener, BaseControls):
         self.previous_frame = None
         self.move_timestamp = 0
         self.rotate_timestamp = 0
+
+    def on_frame(self, controller):
+        frame = controller.frame()
+
+        if len(frame.hands) == 0:
+            self._hasHands = False
+            self._hand = None
+            self._post_event(Events.PAUSE)
+        else:
+            self._hasHands = True
+            self._hand = frame.hands[0]
+            self._post_event(Events.PLAY)
+
+        if self._hasHands:
+            self._frame = frame
+            self._movesideways()
+            self._rotate()
+
+        self.previous_frame = frame
 
     def _moveinterval(self, x):
         return 2000 * abs(x)
@@ -103,26 +120,3 @@ class LeapControls(Leap.Listener, BaseControls):
         if self._should_rotate(palm_direction):
             self._post_event(Events.ROTATE_RIGHT)
             self.rotate_timestamp = self._frame.timestamp
-
-    def on_connect(self, controller):
-        controller.enable_gesture(Leap.Gesture.TYPE_CIRCLE)
-        controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP)
-        controller.enable_gesture(Leap.Gesture.TYPE_SCREEN_TAP)
-        controller.enable_gesture(Leap.Gesture.TYPE_SWIPE)
-
-    def on_frame(self, controller):
-        frame = controller.frame()
-
-        if len(frame.hands) == 0:
-            self._hasHands = False
-            self._hand = None
-        else:
-            self._hasHands = True
-            self._hand = frame.hands[0]
-
-        if self._hasHands:
-            self._frame = frame
-            self._movesideways()
-            self._rotate()
-
-        self.previous_frame = frame

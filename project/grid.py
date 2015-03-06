@@ -90,12 +90,18 @@ class Grid:
             self._hand_visualizer.on_loop()
 
     def on_event(self, event):
+        if event.type is Events.PAUSE_TOGGLE:
+            self._pause_toggle()
+        elif event.type is Events.PLAY:
+            self._play()
+        elif event.type is Events.PAUSE:
+            self._pause()
+
         self._controls.on_event(event)
+        self._mode_switcher.on_event(event)
 
         if not self._paused:
             self._current_tetrimino.on_event(event, self._grid_structure)
-
-        self._mode_switcher.on_event(event)
 
     def new_tetrimino(self):
         """Returns a randomly generated tetrimino"""
@@ -147,3 +153,12 @@ class Grid:
                 self._grid_structure):
             self._shadowed_tetrimino._y += 1
         self._shadowed_tetrimino.on_render(surface)
+
+    def _pause_toggle(self):
+        self._play() if self._paused else self._pause()
+
+    def _play(self):
+        self._paused = False
+
+    def _pause(self):
+        self._paused = True
