@@ -46,7 +46,7 @@ class Tetrimino:
     def __init__(self, grid, transparent):
         self.Rotation = tetris.enum(UP=1, RIGHT=2, DOWN=3, LEFT=4)
         self._rotation = self.Rotation.UP
-        self._position = self._x, self._y = randrange(0, grid.WIDTH-3), 0 # -3: -2 for for "half tetrimino width" and -1 for zero indexed array.
+        self._position = self._x, self._y = randrange(0, grid.WIDTH - 3), 0
         self.BRICK_SIZE = 30
         self._image = self.load_image()
         self._timer = 0

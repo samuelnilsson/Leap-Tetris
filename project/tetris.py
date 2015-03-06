@@ -4,7 +4,6 @@ def enum(**enums):
 
 import pygame
 import grid
-import controls
 
 
 class Tetris:
@@ -19,7 +18,8 @@ class Tetris:
 
     def on_init(self):
         pygame.init()
-        self._display_surface = pygame.display.set_mode(self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self._display_surface = pygame.display.set_mode(self._size,
+                                                        pygame.HWSURFACE | pygame.DOUBLEBUF)
         pygame.display.set_caption("Leap Tetris!")
         self._running = True
 
@@ -54,7 +54,7 @@ class Tetris:
 
             self.on_loop()
             self.on_render()
-            pygame.time.delay(1000/self.FPS)
+            pygame.time.delay(1000 / self.FPS)
 
         self.on_cleanup()
 
