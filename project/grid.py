@@ -35,8 +35,11 @@ class Grid:
         self._background_image = pygame.image.load('assets/background.png')
         self._hand_visualizer = HandVisualizer()
         self._paused = False
-        self._mode_switcher = ModeSwitcher()
-        self._controls = LeapControls()
+        self._mode_switcher = ModeSwitcher(self._switch_controls_mode)
+        self._keyboard_controls = KeyboardControls()
+        self._leap_controls = LeapControls()
+        self._controls = self._keyboard_controls
+        self._keyboard_controls.active = True
         self._shadowed_tetrimino.set_transparent(True)
 
     def init_grid_structure(self):
@@ -78,22 +81,36 @@ class Grid:
         surface.blit(text_surface, position)
 
     def on_loop(self):
-        if not self._paused:
-            if self._current_tetrimino.is_termino_down(self._grid_structure):
-                self._current_tetrimino.attach_current_tetrimino_to_grid(
-                    self._grid_structure)
-                self._current_tetrimino = self.new_tetrimino()
-                number_of_removed_rows = self.remove_full_rows()
-                self._score_board.add_points_from_rows(number_of_removed_rows)
-            else:
-                self._current_tetrimino.on_loop()
-            self._hand_visualizer.on_loop()
+        if self._paused: return
+
+        if self._current_tetrimino.is_termino_down(self._grid_structure):
+            self._current_tetrimino.attach_current_tetrimino_to_grid(
+                self._grid_structure)
+            self._current_tetrimino = self.new_tetrimino()
+            self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
+            self._shadowed_tetrimino.set_transparent(True)
+            number_of_removed_rows = self.remove_full_rows()
+            self._score_board.add_points_from_rows(number_of_removed_rows)
+        else:
+            self._current_tetrimino.on_loop()
+
+        self._hand_visualizer.on_loop()
+
+    def _switch_controls_mode(self):
+        if self._mode_switcher._leap_mode:
+            self._controls = self._leap_controls
+            self._leap_controls.active = True
+            self._keyboard_controls.active = False
+        else:
+            self._controls = self._keyboard_controls
+            self._leap_controls.active = False
+            self._keyboard_controls.active = True
 
     def on_event(self, event):
         if event.type is Events.PAUSE_TOGGLE:
-            self._pause_toggle()
+            self._pause_toggle(),
         elif event.type is Events.PLAY:
-            self._play()
+            self._play(),
         elif event.type is Events.PAUSE:
             self._pause()
 
@@ -144,7 +161,7 @@ class Grid:
                 self._grid_structure[x][y] = None
 
     def render_where_to_land(self, surface):
-        """Renders a shadow showing where the terimino will land"""
+        """Renders a shadow showing where the tetrimino will land"""
         self._shadowed_tetrimino._position = self._current_tetrimino._position
         self._shadowed_tetrimino._x = self._current_tetrimino._x
         self._shadowed_tetrimino._y = self._current_tetrimino._y

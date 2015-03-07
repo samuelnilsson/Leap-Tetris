@@ -8,7 +8,7 @@ from sys import platform as _platform
 
 if _platform == "linux" or _platform == "linux2":
     src_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
-    arch_dir = './lib/x64/' if sys.maxsize > 2 ** 32 else './lib/x86/'
+    arch_dir = '../lib/x64/' if sys.maxsize > 2 ** 32 else '../lib/x86/'
     sys.path.insert(0, os.path.abspath(os.path.join(src_dir, arch_dir)))
     import Leap
 else:
@@ -17,6 +17,9 @@ else:
 
 
 class BaseControls(object):     # TODO: Make this abstract?
+    def __init__(self):
+        self.active = False
+
     def on_event(self, event):
         pass
 
@@ -27,6 +30,8 @@ class BaseControls(object):     # TODO: Make this abstract?
 
 class KeyboardControls(BaseControls):
     def __init__(self):
+        BaseControls.__init__(self)
+
         self._eventMap = {
             pygame.KEYDOWN: {
                 pygame.K_UP: Events.ROTATE_RIGHT,
@@ -41,7 +46,8 @@ class KeyboardControls(BaseControls):
         }
 
     def on_event(self, event):
-        self._post_event(self._generate_event(event))
+        if self.active:
+            self._post_event(self._generate_event(event))
 
     def _generate_event(self, pygame_event):
         try:
@@ -58,31 +64,37 @@ class LeapControls(Leap.Listener, BaseControls):
     state_names = ['STATE_INVALID', 'STATE_START', 'STATE_UPDATE', 'STATE_END']
 
     def __init__(self):
+        BaseControls.__init__(self)
         Leap.Listener.__init__(self)
+
         self._controller = Leap.Controller()
         self._controller.add_listener(self)
-        self._safezone_width = 80
+        self._safezone_width = 100
         self._hasHands = False
         self.previous_frame = None
         self.move_timestamp = 0
         self.rotate_timestamp = 0
 
     def on_frame(self, controller):
+        if not self.active: return
+
         frame = controller.frame()
 
-        if len(frame.hands) == 0:
+        if frame.hands.is_empty:
             self._hasHands = False
             self._hand = None
+
+            print "Leap: Pause!"
             self._post_event(Events.PAUSE)
         else:
             self._hasHands = True
             self._hand = frame.hands[0]
-            self._post_event(Events.PLAY)
-
-        if self._hasHands:
             self._frame = frame
             self._movesideways()
             self._rotate()
+
+            print "Leap: Play!"
+            self._post_event(Events.PLAY)
 
         self.previous_frame = frame
 

@@ -3,7 +3,8 @@ import pygame
 
 class ModeSwitcher:
 
-    def __init__(self):
+    def __init__(self, click_handler):
+        self._click_handler = click_handler
         self._leap_mode = False
         self._font = pygame.font.SysFont('Arial', 18)
         self._is_mouse_over_button = False
@@ -39,6 +40,7 @@ class ModeSwitcher:
     def on_click_event(self, pos):
         if self.is_position_on_button(pos):
             self._leap_mode = not self._leap_mode
+            self._click_handler()
 
     def on_mouse_movement(self, pos):
         self._is_mouse_over_button = self.is_position_on_button(pos)
