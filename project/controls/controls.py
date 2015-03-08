@@ -15,20 +15,23 @@ else:
     sys.path.insert(0, "lib")
     import Leap
 
-# from Leap import CircleGesture, KeyTapGesture, ScreenTapGesture, SwipeGesture
 
+class BaseControls(object):     # TODO: Make this abstract?
+    def __init__(self):
+        self.active = False
 
-class BaseControls:     # TODO: Make this abstract?
+    def on_event(self, event):
+        pass
+
     def _post_event(self, event):
         if event is not None:
             pygame.event.post(pygame.event.Event(event))
 
-    def on_event(self, event):
-        return
-
 
 class KeyboardControls(BaseControls):
     def __init__(self):
+        BaseControls.__init__(self)
+
         self._eventMap = {
             pygame.KEYDOWN: {
                 pygame.K_UP: Events.ROTATE_RIGHT,
@@ -43,12 +46,13 @@ class KeyboardControls(BaseControls):
         }
 
     def on_event(self, event):
-        self._post_event(self._generate_event(event))
+        if self.active:
+            self._post_event(self._generate_event(event))
 
     def _generate_event(self, pygame_event):
         try:
-            eventlist = self._eventMap.get(pygame_event.type, None)
-            event = eventlist.get(pygame_event.key, None)
+            eventlist = self._eventMap.get(pygame_event.type)
+            event = eventlist.get(pygame_event.key)
             return event
         except:
             return None
@@ -60,14 +64,39 @@ class LeapControls(Leap.Listener, BaseControls):
     state_names = ['STATE_INVALID', 'STATE_START', 'STATE_UPDATE', 'STATE_END']
 
     def __init__(self):
+        BaseControls.__init__(self)
         Leap.Listener.__init__(self)
+
         self._controller = Leap.Controller()
         self._controller.add_listener(self)
-        self._safezone_width = 80
+        self._safezone_width = 100
         self._hasHands = False
         self.previous_frame = None
         self.move_timestamp = 0
         self.rotate_timestamp = 0
+
+    def on_frame(self, controller):
+        if not self.active: return
+
+        frame = controller.frame()
+
+        if frame.hands.is_empty:
+            self._hasHands = False
+            self._hand = None
+
+            print "Leap: Pause!"
+            self._post_event(Events.PAUSE)
+        else:
+            self._hasHands = True
+            self._hand = frame.hands[0]
+            self._frame = frame
+            self._movesideways()
+            self._rotate()
+
+            print "Leap: Play!"
+            self._post_event(Events.PLAY)
+
+        self.previous_frame = frame
 
     def _moveinterval(self, x):
         return 2000 * abs(x)
@@ -103,26 +132,3 @@ class LeapControls(Leap.Listener, BaseControls):
         if self._should_rotate(palm_direction):
             self._post_event(Events.ROTATE_RIGHT)
             self.rotate_timestamp = self._frame.timestamp
-
-    def on_connect(self, controller):
-        controller.enable_gesture(Leap.Gesture.TYPE_CIRCLE)
-        controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP)
-        controller.enable_gesture(Leap.Gesture.TYPE_SCREEN_TAP)
-        controller.enable_gesture(Leap.Gesture.TYPE_SWIPE)
-
-    def on_frame(self, controller):
-        frame = controller.frame()
-
-        if len(frame.hands) == 0:
-            self._hasHands = False
-            self._hand = None
-        else:
-            self._hasHands = True
-            self._hand = frame.hands[0]
-
-        if self._hasHands:
-            self._frame = frame
-            self._movesideways()
-            self._rotate()
-
-        self.previous_frame = frame

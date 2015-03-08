@@ -118,14 +118,16 @@ class Tetrimino:
     def on_event(self, event, grid):
         if event.type == Events.ROTATE_RIGHT:
             self.rotate_right(grid)
-        if event.type == Events.MOVE_RIGHT:
+        elif event.type == Events.ROTATE_LEFT:
+            self.rotate_left(grid)
+        elif event.type == Events.MOVE_RIGHT:
             self.move_right(grid)
-        if event.type == Events.MOVE_LEFT:
+        elif event.type == Events.MOVE_LEFT:
             self.move_left(grid)
-        if event.type == Events.DOWN_FASTER:
+        elif event.type == Events.DOWN_FASTER:
             self._timer = 5
             self._current_speed = 5
-        if event.type == Events.DOWN_NORMAL:
+        elif event.type == Events.DOWN_NORMAL:
             self._current_speed = self.SPEED
 
     def rotate_right(self, grid):

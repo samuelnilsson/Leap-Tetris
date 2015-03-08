@@ -10,6 +10,7 @@ import menu
 class Tetris:
 
     def __init__(self):
+        pygame.init()
         self._running = True
         self._display_surface = None
         self._size = self.width, self.height = 360, 720
@@ -25,8 +26,7 @@ class Tetris:
 
     def on_init(self):
         pygame.init()
-        self._display_surface = pygame.display.set_mode(
-            self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self._display_surface = pygame.display.set_mode(self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         pygame.display.set_caption("Leap Tetris!")
         self._running = True
 
