@@ -72,6 +72,7 @@ class LeapControls(Leap.Listener, BaseControls):
         self._safezone_width = 100
         self._safezone_angle = 0.3
         self._hasHands = False
+        self._frame = None
         self.previous_frame = None
         self.move_timestamp = 0
         self.rotate_timestamp = 0
@@ -141,7 +142,6 @@ class LeapControls(Leap.Listener, BaseControls):
 
     def _set_fallingspeed(self):
     	y = self._hand.palm_position.y
-    	print y
     	if y <= 300:
     		self._post_event(Events.DOWN_NORMAL)
     	else:
