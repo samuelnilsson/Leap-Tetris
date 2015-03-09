@@ -70,6 +70,7 @@ class LeapControls(Leap.Listener, BaseControls):
         self._controller = Leap.Controller()
         self._controller.add_listener(self)
         self._safezone_width = 100
+        self._safezone_angle = 0.3
         self._hasHands = False
         self.previous_frame = None
         self.move_timestamp = 0
@@ -83,8 +84,6 @@ class LeapControls(Leap.Listener, BaseControls):
         if frame.hands.is_empty:
             self._hasHands = False
             self._hand = None
-
-            print "Leap: Pause!"
             self._post_event(Events.PAUSE)
         else:
             self._hasHands = True
@@ -92,37 +91,45 @@ class LeapControls(Leap.Listener, BaseControls):
             self._frame = frame
             self._movesideways()
             self._rotate()
-
-            print "Leap: Play!"
             self._post_event(Events.PLAY)
 
         self.previous_frame = frame
 
     def _moveinterval(self, x):
-        return 2000 * abs(x)
+    	y1 = 400000 # 0.4s
+    	y2 = 50000 # 0.05s
+    	x1 = self._safezone_width / 2
+    	x2 = 200
+
+    	k = (y2 - y1) / (x2 - x1)
+    	m = y1 - (k * x1)
+    	calculated_inteval = k * abs(x) + m
+
+        return calculated_inteval
 
     def _rotateinterval(self, palm_direction):
-        # print "%s\r" % palm_direction.normalized
         x_angle = abs(palm_direction.x)
-        millis_base = 800   # Minimum rotation interval in millis
-        interval = millis_base * 1000 * (2 - x_angle)
+        millis_base = 500   # 0.5s
+        interval = millis_base * 1000 * (2 - x_angle ** 2)
+
+        print str(x_angle)+"\r"
+
         return interval
 
     def _movesideways(self):
         x = self._hand.palm_position.x
-        if x < -(self._safezone_width / 2):
-            if self._frame.timestamp - self.move_timestamp > self._moveinterval(x):
-                self._post_event(Events.MOVE_LEFT)
-                self.move_timestamp = self._frame.timestamp
-        elif x > self._safezone_width / 2:
-            if self._frame.timestamp - self.move_timestamp > self._moveinterval(x):
-                self._post_event(Events.MOVE_RIGHT)
-                self.move_timestamp = self._frame.timestamp
+
+        if self._frame.timestamp - self.move_timestamp > self._moveinterval(x):
+			self.move_timestamp = self._frame.timestamp
+			if x < -(self._safezone_width / 2):
+				self._post_event(Events.MOVE_LEFT)
+			elif x > self._safezone_width / 2:
+				self._post_event(Events.MOVE_RIGHT)
 
     def _should_rotate(self, palm_direction):
         since_rotate = self._frame.timestamp - self.rotate_timestamp
         not_too_fast = since_rotate > self._rotateinterval(palm_direction)
-        enough_angle = 0.75 <= abs(palm_direction.normalized.x)
+        enough_angle = self._safezone_angle <= abs(palm_direction.normalized.x)
 
         return not_too_fast and enough_angle
 
