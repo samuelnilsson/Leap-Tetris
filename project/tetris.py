@@ -59,7 +59,6 @@ class Tetris:
             self._running = False
 
         while self._running:
-            print self._game_finished
             if self._switch_to_game:
                 self._state = grid.Grid()
                 self._switch_to_game = False

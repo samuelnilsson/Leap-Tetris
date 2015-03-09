@@ -92,6 +92,7 @@ class LeapControls(Leap.Listener, BaseControls):
             self._movesideways()
             self._rotate()
             self._post_event(Events.PLAY)
+            self._set_fallingspeed()
 
         self.previous_frame = frame
 
@@ -109,10 +110,8 @@ class LeapControls(Leap.Listener, BaseControls):
 
     def _rotateinterval(self, palm_direction):
         x_angle = abs(palm_direction.x)
-        millis_base = 500   # 0.5s
+        millis_base = 500 # 0.5s
         interval = millis_base * 1000 * (2 - x_angle ** 2)
-
-        print str(x_angle)+"\r"
 
         return interval
 
@@ -139,3 +138,11 @@ class LeapControls(Leap.Listener, BaseControls):
         if self._should_rotate(palm_direction):
             self._post_event(Events.ROTATE_RIGHT)
             self.rotate_timestamp = self._frame.timestamp
+
+    def _set_fallingspeed(self):
+    	y = self._hand.palm_position.y
+    	print y
+    	if y <= 300:
+    		self._post_event(Events.DOWN_NORMAL)
+    	else:
+			self._post_event(Events.DOWN_FASTER)
