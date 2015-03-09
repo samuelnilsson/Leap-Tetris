@@ -14,15 +14,19 @@ class Tetris:
         self._running = True
         self._display_surface = None
         self._size = self.width, self.height = 360, 720
-        self._grid = grid.Grid()
-        self._menu = menu.Menu(self, self._running)
-        self._state = self._menu
+        self._main_menu = menu.MainMenu(self, self._running)
+        self._game_finished = (False, 0)
+        self._state = self._main_menu
         self.FPS = 50
         self.BLACK = (0, 0, 0)
         self._switch_to_game = False
+        self._switch_to_menu = False
 
     def switch_state_to_game(self):
         self._switch_to_game = True
+
+    def switch_state_to_menu(self):
+        self._switch_to_menu = True
 
     def on_init(self):
         pygame.init()
@@ -39,7 +43,7 @@ class Tetris:
 
     def on_loop(self):
         """The update function which computes changes in the game world"""
-        self._state.on_loop()
+        self._game_finished = self._state.on_loop()
 
     def on_render(self):
         """Renders the screen graphics"""
@@ -55,9 +59,16 @@ class Tetris:
             self._running = False
 
         while self._running:
+            print self._game_finished
             if self._switch_to_game:
-                self._state = self._grid
+                self._state = grid.Grid()
                 self._switch_to_game = False
+            if self._game_finished[0]:
+                self._state = menu.GameFinishedMenu(self, self._running)
+                self._game_finished = (False, self._game_finished[1])
+            if self._switch_to_menu:
+                self._state = menu.MainMenu(self, self._running)
+                self._switch_to_menu = False
             for event in pygame.event.get():
                 self.on_event(event)
 

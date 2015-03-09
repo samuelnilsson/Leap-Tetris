@@ -81,20 +81,23 @@ class Grid:
         surface.blit(text_surface, position)
 
     def on_loop(self):
-        if self._paused: return
+        """Returns if the game is finished and how many points were achieved"""
+        if not self._paused:
+            if self._current_tetrimino.is_termino_down(self._grid_structure):
+                self._current_tetrimino.attach_current_tetrimino_to_grid(
+                    self._grid_structure)
+                self._current_tetrimino = self.new_tetrimino()
+                if self._current_tetrimino.is_in_allowed_state(self._grid_structure):
+                    return (True, self._score_board._points)
+                self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
+                self._shadowed_tetrimino.set_transparent(True)
+                number_of_removed_rows = self.remove_full_rows()
+                self._score_board.add_points_from_rows(number_of_removed_rows)
+            else:
+                self._current_tetrimino.on_loop()
+            self._hand_visualizer.on_loop()
 
-        if self._current_tetrimino.is_termino_down(self._grid_structure):
-            self._current_tetrimino.attach_current_tetrimino_to_grid(
-                self._grid_structure)
-            self._current_tetrimino = self.new_tetrimino()
-            self._shadowed_tetrimino = copy.deepcopy(self._current_tetrimino)
-            self._shadowed_tetrimino.set_transparent(True)
-            number_of_removed_rows = self.remove_full_rows()
-            self._score_board.add_points_from_rows(number_of_removed_rows)
-        else:
-            self._current_tetrimino.on_loop()
-
-        self._hand_visualizer.on_loop()
+        return (False, 0)
 
     def _switch_controls_mode(self):
         if self._mode_switcher._leap_mode:
