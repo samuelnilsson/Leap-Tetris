@@ -1,3 +1,7 @@
+def enum(**enums):
+    return type('Enum', (), enums)
+
+
 import pygame
 import grid
 import menu
@@ -6,6 +10,7 @@ import menu
 class Tetris:
 
     def __init__(self):
+        pygame.init()
         self._running = True
         self._display_surface = None
         self._size = self.width, self.height = 360, 720
@@ -25,8 +30,7 @@ class Tetris:
 
     def on_init(self):
         pygame.init()
-        self._display_surface = pygame.display.set_mode(
-            self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self._display_surface = pygame.display.set_mode(self._size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         pygame.display.set_caption("Leap Tetris!")
         self._running = True
 
@@ -55,20 +59,23 @@ class Tetris:
             self._running = False
 
         while self._running:
+            print self._game_finished
             if self._switch_to_game:
                 self._state = grid.Grid()
                 self._switch_to_game = False
             if self._game_finished[0]:
                 self._state = menu.GameFinishedMenu(self, self._running)
-                self._game_finished = False
+                self._game_finished = (False, self._game_finished[1])
             if self._switch_to_menu:
                 self._state = menu.MainMenu(self, self._running)
                 self._switch_to_menu = False
             for event in pygame.event.get():
                 self.on_event(event)
+
             self.on_loop()
             self.on_render()
-            pygame.time.delay(1000/self.FPS)
+            pygame.time.delay(1000 / self.FPS)
+
         self.on_cleanup()
 
 
