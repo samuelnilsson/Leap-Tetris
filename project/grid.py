@@ -95,7 +95,7 @@ class Grid:
                 self._score_board.add_points_from_rows(number_of_removed_rows)
             else:
                 self._current_tetrimino.on_loop()
-            self._hand_visualizer.on_loop()
+            self._hand_visualizer.on_loop(self._controls)
 
         return (False, 0)
 
