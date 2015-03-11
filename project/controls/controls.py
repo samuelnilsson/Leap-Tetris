@@ -140,9 +140,11 @@ class LeapControls(Leap.Listener, BaseControls):
             self._post_event(Events.ROTATE_RIGHT)
             self.rotate_timestamp = self._frame.timestamp
 
+    def _above_fallspeed_line():
+        return self._hand.palm_position.y >= 275
+
     def _set_fallingspeed(self):
-    	y = self._hand.palm_position.y
-    	if y <= 300:
+    	if _above_fallspeed_line():
     		self._post_event(Events.DOWN_NORMAL)
     	else:
 			self._post_event(Events.DOWN_FASTER)
