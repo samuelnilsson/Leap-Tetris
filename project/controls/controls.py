@@ -76,6 +76,9 @@ class LeapControls(Leap.Listener, BaseControls):
         self.previous_frame = None
         self.move_timestamp = 0
         self.rotate_timestamp = 0
+        self._sideways_position = False
+        self._falling_position = False
+        self._rotate_position = False
 
     def on_frame(self, controller):
         if not self.active: return
@@ -119,6 +122,8 @@ class LeapControls(Leap.Listener, BaseControls):
     def _movesideways(self):
         x = self._hand.palm_position.x
 
+	self._sideways_position = x < -(self._safezone_width / 2) or x > self._safezone_width / 2
+
         if self._frame.timestamp - self.move_timestamp > self._moveinterval(x):
 			self.move_timestamp = self._frame.timestamp
 			if x < -(self._safezone_width / 2):
@@ -130,7 +135,10 @@ class LeapControls(Leap.Listener, BaseControls):
         since_rotate = self._frame.timestamp - self.rotate_timestamp
         not_too_fast = since_rotate > self._rotateinterval(palm_direction)
         enough_angle = self._safezone_angle <= abs(palm_direction.normalized.x)
-
+        if self._safezone_angle <= abs(palm_direction.normalized.x):
+            self._rotate_position = True
+        else:
+            self._rotate_position = False
         return not_too_fast and enough_angle
 
     def _rotate(self):
@@ -142,7 +150,9 @@ class LeapControls(Leap.Listener, BaseControls):
 
     def _set_fallingspeed(self):
     	y = self._hand.palm_position.y
-    	if y <= 300:
+    	if y <= 275:
     		self._post_event(Events.DOWN_NORMAL)
+                self._falling_position = False
     	else:
+                        self._falling_position = True
 			self._post_event(Events.DOWN_FASTER)

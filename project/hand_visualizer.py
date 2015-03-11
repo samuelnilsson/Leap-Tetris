@@ -38,6 +38,10 @@ class HandVisualizer:
         if isinstance(controls, LeapControls):
             if controls._frame is not None:
                 frame = controls._frame
+                if controls._sideways_position or controls._falling_position or controls._rotate_position:
+                    self._event_triggered = True
+                else:
+                    self._event_triggered = False
                 if frame.hands.is_empty:
                     self._is_showed = False
                     return
